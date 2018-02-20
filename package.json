@@ -1,0 +1,18 @@
+{
+  "name": "manga-merge",
+  "version": "0.1.0",
+  "description":
+    "This tool fetches all pictures of a specific manga by the provided url",
+  "main": "index.js",
+  "author": "Yevhenii Maliavka",
+  "license": "MIT",
+  "private": true,
+  "dependencies": {
+    "cheerio": "^1.0.0-rc.2",
+    "commander": "^2.14.1",
+    "download": "^6.2.5",
+    "image-size": "^0.6.2",
+    "is-url": "^1.2.2",
+    "pdfkit": "^0.8.3"
+  }
+}
