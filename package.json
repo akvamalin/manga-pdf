@@ -3,7 +3,10 @@
   "version": "0.1.0",
   "description":
     "This tool fetches all pictures of a specific manga by the provided url",
-  "main": "index.js",
+  "main": "bin/index.js",
+  "scripts": {
+    "generate": "node bin/index.js"
+  },
   "author": "Yevhenii Maliavka",
   "license": "MIT",
   "private": true,

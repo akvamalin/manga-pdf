@@ -5,25 +5,29 @@ const cheerio = require('cheerio');
 const PDF = require('pdfkit');
 const sizeOf = require('image-size');
 const fs = require('fs');
+const path = require('path');
 const version = require('../package.json').version;
 
 const SELECTOR = '#vungdoc img';
-const OUTPUT_FILE_NAME = 'manga-merge.pdf';
+const CHAPTERS = '#c_chapter option';
+const DEFAULT_OUTPUT = 'manga-merge.pdf';
 
 program
   .version(version)
   .option('-m, --merge', 'Merges all images of a chapter into a single page')
   .parse(process.argv);
 
-if (process.argv.slice(2).length != 1) {
+if (!process.argv.slice(2).length) {
   program.help();
 }
 
-const url = process.argv[2];
+const resolveOutput = output =>
+  output
+    ? path.isAbsolute(output) ? output : path.join(process.cwd(), output)
+    : path.join(process.cwd(), DEFAULT_OUTPUT);
 
-const downloadImages = async url => {
-  const website = await download(url);
-  const imageTags = cheerio.load(website)(SELECTOR);
+const downloadImages = async webpage => {
+  const imageTags = cheerio.load(webpage)(SELECTOR);
   const urls = Object.keys(imageTags)
     .filter(index => imageTags[index].name && imageTags[index].name == 'img')
     .map(key => imageTags[key].attribs.src);
@@ -32,27 +36,40 @@ const downloadImages = async url => {
 
 const addPage = pdf => image => {
   const { height, width } = sizeOf(image);
+  pdf.addPage({
+    margin: 0,
+    size: [width, height]
+  });
   pdf.image(image);
 };
 
-const getSizeParameters = images => {
-  const sizes = images.map(image => sizeOf(image));
-  const maxWidth = sizes.sort((a, b) => b.width - a.width)[0].width;
-  const totalHeight = sizes.reduce((a, b) => a + b.height, 0);
-  return [maxWidth, totalHeight];
+const getWebpages = async url => {
+  const page = await download(url);
+  const baseUrl = `${url.substr(0, url.lastIndexOf('/') + 1)}chapter_`;
+  const elements = cheerio.load(page)(CHAPTERS);
+  const pages = await Promise.all(
+    Object.keys(elements)
+      .filter(
+        key =>
+          elements[key].attribs &&
+          elements[key].attribs.value &&
+          !elements[key].attribs.selected
+      )
+      .map(key => download(baseUrl + elements[key].attribs.value))
+  );
+  pages.unshift(page);
+  return pages;
 };
 
-const main = async () => {
-  const images = await downloadImages(url);
-  const size = getSizeParameters(images);
+const entry = async () => {
+  const url = process.argv[2];
+  const output = resolveOutput(process.argv[3]);
+  const pages = await getWebpages(url);
   const document = new PDF({ autoFirstPage: false });
-  document.pipe(fs.createWriteStream(OUTPUT_FILE_NAME));
-  document.addPage({
-    margin: 0,
-    size
-  });
-  images.map(addPage(document));
+  document.pipe(fs.createWriteStream(output));
+  const imagesSet = await Promise.all(pages.map(page => downloadImages(page)));
+  imagesSet.map(images => images.map(addPage(document)));
   document.end();
 };
 
-main();
+entry();
