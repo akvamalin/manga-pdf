@@ -1,0 +1,9 @@
+{
+  "compilerOptions": {
+    "module": "commonjs",
+    "removeComments": true,
+    "outDir": "dist",
+    "lib": ["es5", "es6", "dom"]
+  },
+  "exclude": ["node_modules", "src/app"]
+}

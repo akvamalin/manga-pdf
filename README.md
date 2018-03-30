@@ -6,14 +6,20 @@ The tool uses [Mangakalot](http://mangakakalot.com/).
 
 ## How to run this tool
 
+Firstly you need to install all dependecies:
+
 ```sh
-$ yarn generate <url> [output]
+$ yarn
 ```
 
-or
+```sh
+$ yarn start
+```
+
+or if you have electron installed globally
 
 ```sh
-$ node bin/index.js <url> [output]
+$ electron bin/index.js <url> [output]
 ```
 
 ## The idea
