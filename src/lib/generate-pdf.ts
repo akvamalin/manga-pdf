@@ -61,7 +61,7 @@ const getWebpages = async url => {
   return pages;
 };
 
-const entry = async () => {
+const generatePdf = async () => {
   const url = process.argv[2];
   const output = resolveOutput(process.argv[3]);
   const pages = await getWebpages(url);
@@ -71,5 +71,3 @@ const entry = async () => {
   imagesSet.map(images => images.map(addPage(document)));
   document.end();
 };
-
-entry();

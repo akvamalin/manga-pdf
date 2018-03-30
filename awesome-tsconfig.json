@@ -1,0 +1,8 @@
+{
+  "compilerOptions": {
+    "removeComments": true,
+    "outDir": "dist",
+    "jsx": "react"
+  },
+  "include": ["app"]
+}
