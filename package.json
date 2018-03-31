@@ -1,12 +1,12 @@
 {
   "name": "manga-merge",
   "version": "0.1.0",
-  "description":
-    "This tool fetches all pictures of a specific manga by the provided url",
+  "description": "This tool fetches all pictures of a specific manga by the provided url",
   "main": "bin/index.js",
   "scripts": {
     "build:electron": "tsc",
     "build:app": "webpack",
+    "watch:app": "webpack-dev-server",
     "start": "yarn build:app && yarn build:electron && electron bin/index.js"
   },
   "author": "Yevhenii Maliavka",
@@ -21,14 +21,17 @@
     "is-url": "^1.2.2",
     "pdfkit": "^0.8.3",
     "react": "^16.3.0",
-    "react-dom": "^16.3.0"
+    "react-dom": "^16.3.0",
+    "react-toolbox": "^2.0.0-beta.12"
   },
   "devDependencies": {
     "@types/electron": "^1.6.10",
     "@types/react": "^16.1.0",
     "@types/react-dom": "^16.0.4",
     "awesome-typescript-loader": "^4.0.1",
+    "css-loader": "^0.28.11",
     "html-webpack-plugin": "^3.1.0",
+    "style-loader": "^0.20.3",
     "typescript": "^2.8.1",
     "webpack": "^4.4.1",
     "webpack-cli": "^2.0.13",
